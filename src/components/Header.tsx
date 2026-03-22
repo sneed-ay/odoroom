@@ -6,8 +6,13 @@ export default function Header() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2 group">
-            <span className="text-2xl font-bold text-violet-700 tracking-tight group-hover:text-violet-800 transition-colors">
-              おどるーむ
+            <span className="flex flex-col leading-tight">
+              <span className="text-2xl font-bold text-violet-700 tracking-tight group-hover:text-violet-800 transition-colors">
+                おどるーむ
+              </span>
+              <span className="text-[10px] text-violet-400 tracking-wider">
+                ～社交ダンス総合情報サイト～
+              </span>
             </span>
           </Link>
           <nav className="flex items-center gap-6 text-sm font-medium text-gray-600">

@@ -13,8 +13,8 @@ const notoSansJP = Noto_Sans_JP({
 
 export const metadata: Metadata = {
   title: {
-    default: "おどるーむ - 日本全国の社交ダンス教室・スタジオ検索",
-    template: "%s | おどるーむ",
+    default: "おどるーむ ～社交ダンス総合情報サイト～",
+    template: "%s | おどるーむ ～社交ダンス総合情報サイト～",
   },
   description:
     "日本全国の社交ダンス教室・スタジオを都道府県から探せます。ワルツ、タンゴ、ルンバなど様々な種目に対応した教室情報を掲載。",

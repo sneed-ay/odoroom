@@ -14,8 +14,9 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-violet-700 to-violet-900 text-white py-16 px-4">
         <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 tracking-tight">
-            社交ダンス教室を探す
+          <h1 className="mb-4 tracking-tight">
+            <span className="block text-3xl sm:text-4xl lg:text-5xl font-bold">おどるーむ</span>
+            <span className="block text-sm sm:text-base text-violet-200 mt-1">～社交ダンス総合情報サイト～</span>
           </h1>
           <p className="text-violet-200 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
             日本全国の社交ダンス教室・スタジオを都道府県から検索できます。
