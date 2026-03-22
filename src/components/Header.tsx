@@ -17,14 +17,7 @@ export default function Header() {
               </span>
             </span>
           </Link>
-          <nav className="flex items-center gap-6 text-sm font-medium text-gray-600">
-            <Link href="/" className="hover:text-violet-700 transition-colors">
-              トップ
-            </Link>
-            <Link href="/prefecture/tokyo" className="hover:text-violet-700 transition-colors">
-              東京
-            </Link>
-          </nav>
+          {/* ナビボタン削除 */}
         </div>
       </div>
     </header>

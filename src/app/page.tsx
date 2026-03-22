@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import PrefectureGrid from "@/components/PrefectureGrid";
 import { regions } from "@/data/prefectures";
+import { studios } from "@/data/studios";
 
 export const metadata: Metadata = {
   title: "おどるーむ - 日本全国の社交ダンス教室・スタジオ検索",
