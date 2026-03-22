@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import PrefectureGrid from "@/components/PrefectureGrid";
 import { regions } from "@/data/prefectures";
+import { studios } from "@/data/studios";
 
 
 export const metadata: Metadata = {
