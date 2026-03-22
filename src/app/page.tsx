@@ -103,8 +103,8 @@ export default function HomePage() {
                 </div>
                 <div className="w-px h-10 bg-violet-700" />
                 <div className="text-center md:text-left">
-                  <div className="text-3xl font-bold text-amber-400">10</div>
-                  <div className="text-xs text-violet-400 mt-0.5">種目対応</div>
+                  <div className="text-3xl font-bold text-amber-400">21</div>
+                  <div className="text-xs text-violet-400 mt-0.5">掲載教室数</div>
                 </div>
               </div>
             </div>
