@@ -30,24 +30,6 @@ export default function StudioCard({ studio }: StudioCardProps) {
         )}
 
         <div className="mt-auto space-y-2">
-          {studio.danceStyles.length > 0 && (
-            <div className="flex flex-wrap gap-1">
-              {studio.danceStyles.slice(0, 4).map((style) => (
-                <span
-                  key={style}
-                  className="inline-block text-xs bg-violet-50 text-violet-700 px-2 py-0.5 rounded-full font-medium"
-                >
-                  {style}
-                </span>
-              ))}
-              {studio.danceStyles.length > 4 && (
-                <span className="inline-block text-xs text-gray-400 px-1 py-0.5">
-                  +{studio.danceStyles.length - 4}
-                </span>
-              )}
-            </div>
-          )}
-
           <div className="flex flex-wrap gap-1">
             {studio.lessonTypes.map((type) => (
               <span
