@@ -77,7 +77,7 @@ export default function StudioPage({ params }: Props) {
                     スタッフ（{studio.staff.length}名）
                   </h2>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    {studio.staff.map((member: { name: string; role: string; photo: string }, i: number) => (
+                    {studio.staff.map((member: { name: string; role?: string; photo?: string }, i: number) => (
                       <div key={i} className="text-center">
                         {member.photo ? (
                           <img
