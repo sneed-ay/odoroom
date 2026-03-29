@@ -15,10 +15,10 @@ const orgColors: Record<string, { bg: string; text: string; border: string }> = 
 };
 
 const orgEmoji: Record<string, string> = {
-  JBDF: "ð",
-  JDC: "â­",
-  JCF: "ð",
-  JDSF: "ð¯",
+  JBDF: "🏆",
+  JDC: "⭐",
+  JCF: "💎",
+  JDSF: "🎯",
 };
 
 export default function EventsPage() {
@@ -50,10 +50,10 @@ export default function EventsPage() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-violet-600 via-pink-500 to-amber-500 bg-clip-text text-transparent">
-            ð ã¤ãã³ãæå ± ðº
+            💃 イベント情報 🕺
           </h1>
           <p className="mt-2 text-gray-500 text-sm">
-            JBDFã»JDCã»JCFã»JDSFã®å¤§ä¼æå ±ãã¾ã¨ãã¦ãã§ãã¯
+            JBDF・JDC・JCF・JDSFの大会情報をまとめてチェック
           </p>
         </div>
 
@@ -71,7 +71,7 @@ export default function EventsPage() {
                   : "bg-white text-violet-600 border-2 border-violet-200 hover:border-violet-400 hover:shadow-md"
               }`}
             >
-              {year}å¹´
+              {year}年
             </button>
           ))}
         </div>
@@ -85,7 +85,7 @@ export default function EventsPage() {
                 : "bg-white text-pink-500 border border-pink-200 hover:bg-pink-50"
             }`}
           >
-            å¨ã¦
+            全て
           </button>
           {MONTHS.map((m) => (
             <button
@@ -100,7 +100,7 @@ export default function EventsPage() {
               }`}
               disabled={!monthCounts[m]}
             >
-              {m}æ {monthCounts[m] ? ` (${monthCounts[m]})` : ""}
+              {m}月 {monthCounts[m] ? ` (${monthCounts[m]})` : ""}
             </button>
           ))}
         </div>
@@ -108,9 +108,9 @@ export default function EventsPage() {
         <div className="space-y-4">
           {filtered.length === 0 ? (
             <div className="text-center py-16">
-              <p className="text-6xl mb-4">ð­</p>
+              <p className="text-6xl mb-4">💭</p>
               <p className="text-gray-400 text-lg">
-                ã¾ã ã¤ãã³ããç»é²ããã¦ãã¾ãã
+                まだイベントが登録されていません
               </p>
             </div>
           ) : (
@@ -119,7 +119,7 @@ export default function EventsPage() {
               const emoji = orgEmoji[event.organizer];
               const dateObj = new Date(event.date + "T00:00:00");
               const monthDay = `${dateObj.getMonth() + 1}/${dateObj.getDate()}`;
-              const dayNames = ["æ¥", "æ", "ç«", "æ°´", "æ¨", "é", "å"];
+              const dayNames = ["日", "月", "火", "水", "木", "金", "土"];
               const dayOfWeek = dayNames[dateObj.getDay()];
 
               const cardContent = (
@@ -145,7 +145,7 @@ export default function EventsPage() {
                         {new Date(
                           event.dateEnd + "T00:00:00"
                         ).getDate()}
-                        æ¥
+                        日
                       </span>
                     )}
                   </div>
@@ -215,7 +215,7 @@ export default function EventsPage() {
                               d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                             />
                           </svg>
-                          çµ¾å: {event.entryDeadline}
+                          絾切: {event.entryDeadline}
                         </span>
                       )}
                     </div>
@@ -225,7 +225,7 @@ export default function EventsPage() {
                           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                           </svg>
-                          å¤§ä¼ãã¼ã¸ãè¦ã
+                          大会ページを見る
                         </span>
                       </div>
                     )}
@@ -256,7 +256,7 @@ export default function EventsPage() {
         </div>
 
         <div className="mt-10 p-4 bg-white/70 backdrop-blur rounded-2xl border border-gray-200">
-          <p className="text-xs text-gray-400 font-medium mb-2">ä¸»å¬å£ä½</p>
+          <p className="text-xs text-gray-400 font-medium mb-2">主催団体</p>
           <div className="flex flex-wrap gap-3">
             {Object.entries(orgColors).map(([org, colors]) => (
               <span
