@@ -1,3 +1,4 @@
+import { Studio } from "@/types";
 
 export const studios: Studio[] = [
   {
