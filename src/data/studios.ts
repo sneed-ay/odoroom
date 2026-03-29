@@ -1,4 +1,4 @@
- 
+
 export const studios: Studio[] = [
   {
     id: "tokyo-001",
@@ -3511,7 +3511,6 @@ export const studios: Studio[] = [
       { name: "本田 浩", role: "代表・インストラクター", photo: "" }
     ]
   },
-,
 // ========== 徳島県 (Tokushima) ==========
   {
     id: "tokushima-001",
