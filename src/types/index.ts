@@ -46,6 +46,7 @@ export interface DanceEvent {
   category?: string;
   level?: string;
   entryDeadline?: string;
+  url?: string;
   year: number;
   month: number;
 }
