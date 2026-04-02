@@ -429,7 +429,7 @@ export const events: DanceEvent[] = [
     id: "jdsf-260404",
     name: "全国ダンススポーツ競技会鳥取大会",
     organizer: "JDSF",
-    location: "鳅取県",
+    location: "鳥取県",
     date: "2026-04-26",
     category: "スタンダード/ラテン",
     level: "アマチュア",
@@ -439,7 +439,8 @@ export const events: DanceEvent[] = [
   },
   {
     id: "jdsf-260405",
-    name: "関東甲信越ブロックシニアⅡ:en:organizer: "JDSF",
+    name: "関東甲信越ブロックシニアⅡ選手権・神奈川県選手権",
+    organizer: "JDSF",
     location: "神奈川県",
     date: "2026-04-12",
     category: "スタンダード/ラテン",
@@ -490,7 +491,6 @@ export const events: DanceEvent[] = [
     organizer: "JDSF",
     location: "茨城県",
     date: "2026-04-19",
-    category: "スタン�26-04-19",
     category: "スタンダード/ラテン",
     level: "アマチュア",
     url: "https://adm.jdsf.jp/competition/index.php",
@@ -1418,7 +1418,7 @@ export const events: DanceEvent[] = [
     year: 2026,
     month: 11,
   },
-  // EJBDF (東部日本ボールルームダンス���盟) Events
+  // EJBDF (東部日本ボールルームダンス連盟) Events
   {
     id: "ejbdf-202602-001",
     name: "アレックス・ムーアカップ/マダム・ロー杯2026",
