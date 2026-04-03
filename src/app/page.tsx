@@ -5,7 +5,7 @@ import { studios } from "@/data/studios";
 export const metadata: Metadata = {
   title: "ダンスポット ～社交ダンス総合情報サイト～",
   description:
-    "社交ダンスに関するすべてが見つかる総合プラットフォーム。教室検索、掲示板、イベント情報、練習場探しまで。",
+    "社交ダンスに関するすべてが見つかる総合プラットフォーム。教室検索、掲示板、大会情報、練習場探しまで。",
 };
 
 const services = [
@@ -33,7 +33,7 @@ const services = [
     active: true,
   },
   {
-    name: "イベント",
+    name: "大会情報",
     desc: "全国のダンスパーティー・競技会情報を掲載",
     href: "/events",
     icon: (
@@ -105,7 +105,7 @@ export default function TopPage() {
             ～社交ダンス総合情報サイト～
           </p>
           <p className="text-violet-200 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-            教室検索、掲示板、イベント情報、練習場探しまで。
+            教室検索、掲示板、大会情報、練習場探しまで。
             社交ダンスに関するすべてが見つかるプラットフォーム。
           </p>
         </div>
