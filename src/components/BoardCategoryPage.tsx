@@ -74,20 +74,20 @@ export default function BoardCategoryPage({ category, categoryLabel }: BoardCate
     }
   };
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-pink-50 to-amber-50">
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="mb-6">
-          <Link href="/board" className="text-pink-600 hover:text-pink-700 text-sm mb-2 inline-block">
-            ← 掛示板トップに戻る
+          <Link href="/board" className="text-violet-600 hover:text-violet-700 text-sm mb-4 inline-flex items-center gap-1">
+            ← 掲示板トップに戻る
           </Link>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{categoryLabel}</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-violet-600 via-pink-500 to-amber-500 bg-clip-text text-transparent">{categoryLabel}</h1>
           <p className="text-gray-600 mt-1">自由に投稿できます</p>
         </div>
 
         <div className="mb-6">
           <button
             onClick={() => setShowForm(!showForm)}
-            className="bg-pink-600 text-white px-6 py-2 rounded-lg hover:bg-pink-700 transition-colors font-medium"
+            className="bg-gradient-to-r from-violet-600 to-pink-500 text-white px-6 py-2 rounded-lg hover:from-violet-700 hover:to-pink-600 transition-all font-medium shadow-sm"
           >
             {showForm ? "キャンセル" : "新規スレッド作成"}
           </button>
