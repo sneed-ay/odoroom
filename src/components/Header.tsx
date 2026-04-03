@@ -5,6 +5,8 @@ const services = [
   { name: "掲示板", href: "/board", active: true },
   { name: "イベント", href: "/events", active: true },
   { name: "練習場", href: "#", soon: true },
+  { name: "ダンスサロン", href: "#", soon: true },
+  { name: "サークル", href: "#", soon: true },
 ];
 
 export default function Header() {
