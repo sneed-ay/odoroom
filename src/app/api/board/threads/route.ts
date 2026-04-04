@@ -5,7 +5,7 @@ import * as path from "path";
 const DATA_DIR = path.join(process.cwd(), "data");
 const THREADS_FILE = path.join(DATA_DIR, "threads.json");
 
-interface Thread {
+export interface Thread {
   id: string;
   category: string;
   title: string;
