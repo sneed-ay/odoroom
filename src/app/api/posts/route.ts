@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 
+const FIELDS = 'id, title, content, dance_type, area, role, level, nickname, created_at, line_user_id, line_display_name, line_picture_url, age_range, height, pro_am, dance_experience, direction, practice_frequency, practice_location, smoking, marital_status, std_org, std_level, latin_org, latin_level';
+
 // GET /api/posts - Fetch all partner posts
 export async function GET() {
   try {
     const supabase = getServiceSupabase();
     const { data, error } = await supabase
       .from('partner_posts')
-      .select('id, title, content, dance_type, area, role, level, nickname, created_at, line_user_id, line_display_name, line_picture_url, age_range, height, pro_am, dance_experience, direction, practice_frequency, practice_location, smoking, marital_status')
+      .select(FIELDS)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -27,10 +29,11 @@ export async function POST(request: NextRequest) {
   try {
     const {
       lineUserId, lineDisplayName, linePictureUrl,
-      title, content, danceType, area, role, level,
+      nickname, title, content, danceType, area, role, level,
       ageRange, height, proAm, danceExperience,
       direction, practiceFrequency, practiceLocation,
-      smoking, maritalStatus
+      smoking, maritalStatus,
+      stdOrg, stdLevel, latinOrg, latinLevel
     } = await request.json();
 
     if (!lineUserId || !lineDisplayName || !content || !danceType || !area || !role) {
@@ -44,8 +47,8 @@ export async function POST(request: NextRequest) {
         line_user_id: lineUserId,
         line_display_name: lineDisplayName,
         line_picture_url: linePictureUrl || null,
-        nickname: lineDisplayName,
-        title: title || `${lineDisplayName}の募集`,
+        nickname: nickname || lineDisplayName,
+        title: title || `${nickname || lineDisplayName}の募集`,
         content,
         dance_type: danceType,
         area,
@@ -60,8 +63,12 @@ export async function POST(request: NextRequest) {
         practice_location: practiceLocation || null,
         smoking: smoking || null,
         marital_status: maritalStatus || null,
+        std_org: stdOrg || null,
+        std_level: stdLevel || null,
+        latin_org: latinOrg || null,
+        latin_level: latinLevel || null,
       })
-      .select('id, title, content, dance_type, area, role, level, nickname, line_display_name, line_picture_url, created_at, line_user_id, age_range, height, pro_am, dance_experience, direction, practice_frequency, practice_location, smoking, marital_status')
+      .select(FIELDS)
       .single();
 
     if (error) {
