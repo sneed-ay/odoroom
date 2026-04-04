@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { initLiff, isLoggedIn, login, getProfile } from "@/lib/liff";
 
 interface Thread {
   id: string;
@@ -11,6 +12,15 @@ interface Thread {
   createdAt: string;
   content?: string;
   replies?: number;
+  lineUserId?: string;
+  lineDisplayName?: string;
+  linePictureUrl?: string;
+}
+
+interface UserProfile {
+  userId: string;
+  displayName: string;
+  pictureUrl?: string;
 }
 
 interface BoardCategoryPageProps {
@@ -21,33 +31,55 @@ interface BoardCategoryPageProps {
 export default function BoardCategoryPage({ category, categoryLabel }: BoardCategoryPageProps) {
   const [threads, setThreads] = useState<Thread[]>([]);
   const [loading, setLoading] = useState(true);
+  const [liffReady, setLiffReady] = useState(false);
+  const [liffError, setLiffError] = useState<string | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [formTitle, setFormTitle] = useState("");
-  const [formAuthor, setFormAuthor] = useState("");
   const [formContent, setFormContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const loadThreads = useCallback(async () => {
-    setLoading(true);
+
+  const fetchThreads = useCallback(async () => {
     try {
       const res = await fetch(`/api/board/threads?category=${category}`);
-      if (res.ok) {
-        const data = await res.json();
-        setThreads(data);
-      }
-    } catch (e) {
-      console.error("Failed to load threads:", e);
+      const data = await res.json();
+      if (data.threads) setThreads(data.threads);
+    } catch (error) {
+      console.error("Failed to fetch threads:", error);
     } finally {
       setLoading(false);
     }
   }, [category]);
 
   useEffect(() => {
-    loadThreads();
-  }, [loadThreads]);
+    const init = async () => {
+      try {
+        await initLiff();
+        setLiffReady(true);
+        if (isLoggedIn()) {
+          const profile = await getProfile();
+          setUser({
+            userId: profile.userId,
+            displayName: profile.displayName,
+            pictureUrl: profile.pictureUrl,
+          });
+        }
+      } catch (error) {
+        console.error("LIFF init error:", error);
+        setLiffError("LINEの初期化に失敗しました");
+      }
+    };
+    init();
+    fetchThreads();
+  }, [fetchThreads]);
+
+  const handleLogin = () => {
+    login();
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formTitle.trim() || !formContent.trim()) return;
+    if (!user || !formTitle.trim() || !formContent.trim()) return;
     setSubmitting(true);
     try {
       const res = await fetch("/api/board/threads", {
@@ -56,120 +88,153 @@ export default function BoardCategoryPage({ category, categoryLabel }: BoardCate
         body: JSON.stringify({
           category,
           title: formTitle.trim(),
-          author: formAuthor.trim() || "名無しさん",
+          author: user.displayName,
           content: formContent.trim(),
+          lineUserId: user.userId,
+          lineDisplayName: user.displayName,
+          linePictureUrl: user.pictureUrl || null,
         }),
       });
       if (res.ok) {
         setFormTitle("");
-        setFormAuthor("");
         setFormContent("");
         setShowForm(false);
-        loadThreads();
+        fetchThreads();
       }
-    } catch (e) {
-      console.error("Failed to create thread:", e);
+    } catch (error) {
+      console.error("Failed to create thread:", error);
     } finally {
       setSubmitting(false);
     }
   };
+
+  const formatDate = (dateStr: string) => {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString("ja-JP", { year: "numeric", month: "short", day: "numeric" });
+  };
+
+  if (liffError) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center p-8">
+          <p className="text-red-500 text-lg">{liffError}</p>
+          <p className="text-gray-500 mt-2">LINEアプリから開いてください</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!liffReady) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-gray-500">読み込み中...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-pink-50 to-amber-50">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="mb-6">
-          <Link href="/board" className="text-violet-600 hover:text-violet-700 text-sm mb-4 inline-flex items-center gap-1">
-            ← 掲示板トップに戻る
-          </Link>
-          <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-violet-600 via-pink-500 to-amber-500 bg-clip-text text-transparent">{categoryLabel}</h1>
-          <p className="text-gray-600 mt-1">自由に投稿できます</p>
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">{categoryLabel}</h1>
+          <p className="text-gray-500 text-sm mt-1">スレッド一覧</p>
         </div>
-
-        <div className="mb-6">
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="bg-gradient-to-r from-violet-600 to-pink-500 text-white px-6 py-2 rounded-lg hover:from-violet-700 hover:to-pink-600 transition-all font-medium shadow-sm"
-          >
-            {showForm ? "キャンセル" : "新規スレッド作成"}
-          </button>
-        </div>
-
-        {showForm && (
-          <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border p-6 mb-6">
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">タイトル</label>
-                <input
-                  type="text"
-                  value={formTitle}
-                  onChange={(e) => setFormTitle(e.target.value)}
-                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-                  placeholder="スレッドのタイトル"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">名前</label>
-                <input
-                  type="text"
-                  value={formAuthor}
-                  onChange={(e) => setFormAuthor(e.target.value)}
-                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-                  placeholder="名無しさん"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">内容</label>
-                <textarea
-                  value={formContent}
-                  onChange={(e) => setFormContent(e.target.value)}
-                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 min-h-[120px]"
-                  placeholder="スレッドの内容を入力"
-                  required
-                />
+        <div className="flex items-center gap-3">
+          {user ? (
+            <>
+              <div className="flex items-center gap-2">
+                {user.pictureUrl && (
+                  <img src={user.pictureUrl} alt="" className="w-8 h-8 rounded-full" />
+                )}
+                <span className="text-sm text-gray-700">{user.displayName}</span>
               </div>
               <button
-                type="submit"
-                disabled={submitting}
-                className="bg-pink-600 text-white px-6 py-2 rounded-lg hover:bg-pink-700 disabled:opacity-50 font-medium"
+                onClick={() => setShowForm(!showForm)}
+                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition text-sm font-medium"
               >
-                {submitting ? "投稿中..." : "投稿する"}
+                {showForm ? "閉じる" : "新規スレッド"}
               </button>
-            </div>
-          </form>
-        )}
-        {loading ? (
-          <div className="text-center py-12 text-gray-500">読み込み中...</div>
-        ) : threads.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-gray-400 text-5xl mb-4">💬</div>
-            <p className="text-gray-500 text-lg">まだスレッドがありません</p>
-            <p className="text-gray-400 text-sm mt-1">最初のスレッドを立ててみましょう</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {threads.map((thread) => (
-              <Link
-                key={thread.id}
-                href={`/board/${thread.id}`}
-                className="block bg-white rounded-xl shadow-sm border p-4 hover:shadow-md transition-shadow"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-gray-900 truncate">{thread.title}</h3>
-                    <div className="flex items-center gap-3 mt-1 text-sm text-gray-500">
-                      <span>{thread.author}</span>
-                      <span>{new Date(thread.createdAt).toLocaleDateString("ja-JP")}</span>
-                    </div>
-                  </div>
-                  <svg className="w-5 h-5 text-gray-400 flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
+            </>
+          ) : (
+            <button
+              onClick={handleLogin}
+              className="bg-[#06C755] text-white px-6 py-2 rounded-lg hover:bg-[#05b54c] transition text-sm font-medium flex items-center gap-2"
+            >
+              LINEでログイン
+            </button>
+          )}
+        </div>
       </div>
+
+      {showForm && user && (
+        <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border p-6 mb-8">
+          <h2 className="text-lg font-bold mb-4">新規スレッド作成</h2>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">タイトル <span className="text-red-500">*</span></label>
+              <input
+                type="text"
+                value={formTitle}
+                onChange={(e) => setFormTitle(e.target.value)}
+                required
+                className="w-full border rounded-lg px-3 py-2 text-sm"
+                placeholder="スレッドのタイトル"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">内容 <span className="text-red-500">*</span></label>
+              <textarea
+                value={formContent}
+                onChange={(e) => setFormContent(e.target.value)}
+                required
+                rows={4}
+                className="w-full border rounded-lg px-3 py-2 text-sm"
+                placeholder="スレッドの内容を書いてください"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition font-medium disabled:opacity-50"
+            >
+              {submitting ? "作成中..." : "スレッドを作成"}
+            </button>
+          </div>
+        </form>
+      )}
+
+      {loading ? (
+        <p className="text-center text-gray-500 py-8">読み込み中...</p>
+      ) : threads.length === 0 ? (
+        <p className="text-center text-gray-500 py-8">まだスレッドがありません</p>
+      ) : (
+        <div className="space-y-3">
+          {threads.map((thread) => (
+            <Link
+              key={thread.id}
+              href={`/board/${thread.id}`}
+              className="block bg-white rounded-xl shadow-sm border p-4 hover:shadow-md transition"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-gray-900 truncate">{thread.title}</h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    {thread.linePictureUrl && (
+                      <img src={thread.linePictureUrl} alt="" className="w-5 h-5 rounded-full" />
+                    )}
+                    <span className="text-xs text-gray-500">
+                      {thread.lineDisplayName || thread.author} ・ {formatDate(thread.createdAt)}
+                    </span>
+                    {thread.replies !== undefined && thread.replies > 0 && (
+                      <span className="text-xs text-blue-500">返信 {thread.replies}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
