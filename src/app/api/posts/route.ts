@@ -5,10 +5,9 @@ import { getServiceSupabase } from '@/lib/supabase';
 export async function GET() {
   try {
     const supabase = getServiceSupabase();
-
     const { data, error } = await supabase
       .from('partner_posts')
-      .select('id, title, content, dance_type, area, role, level, nickname, created_at, line_user_id, line_display_name, line_picture_url')
+      .select('id, title, content, dance_type, area, role, level, nickname, created_at, line_user_id, line_display_name, line_picture_url, age_range, height, pro_am, dance_experience, direction, practice_frequency, practice_location, smoking, marital_status')
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -26,14 +25,19 @@ export async function GET() {
 // POST /api/posts - Create a new partner post (LINE authenticated)
 export async function POST(request: NextRequest) {
   try {
-    const { lineUserId, lineDisplayName, linePictureUrl, title, content, danceType, area, role, level } = await request.json();
+    const {
+      lineUserId, lineDisplayName, linePictureUrl,
+      title, content, danceType, area, role, level,
+      ageRange, height, proAm, danceExperience,
+      direction, practiceFrequency, practiceLocation,
+      smoking, maritalStatus
+    } = await request.json();
 
-    if (!lineUserId || !lineDisplayName || !title || !content || !danceType || !area || !role) {
+    if (!lineUserId || !lineDisplayName || !content || !danceType || !area || !role) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     const supabase = getServiceSupabase();
-
     const { data, error } = await supabase
       .from('partner_posts')
       .insert({
@@ -41,14 +45,23 @@ export async function POST(request: NextRequest) {
         line_display_name: lineDisplayName,
         line_picture_url: linePictureUrl || null,
         nickname: lineDisplayName,
-        title,
+        title: title || `${lineDisplayName}の募集`,
         content,
         dance_type: danceType,
         area,
         role,
         level: level || null,
+        age_range: ageRange || null,
+        height: height || null,
+        pro_am: proAm || null,
+        dance_experience: danceExperience || null,
+        direction: direction || null,
+        practice_frequency: practiceFrequency || null,
+        practice_location: practiceLocation || null,
+        smoking: smoking || null,
+        marital_status: maritalStatus || null,
       })
-      .select('id, title, content, dance_type, area, role, level, nickname, line_display_name, line_picture_url, created_at, line_user_id')
+      .select('id, title, content, dance_type, area, role, level, nickname, line_display_name, line_picture_url, created_at, line_user_id, age_range, height, pro_am, dance_experience, direction, practice_frequency, practice_location, smoking, marital_status')
       .single();
 
     if (error) {
